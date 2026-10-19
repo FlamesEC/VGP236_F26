@@ -7,8 +7,6 @@ using System.Linq;
 public class AnimatedObject : MonoBehaviour
 {
     public SpriteRenderer sr;
-    public SpriteMask sm;
-    public Image im;
     public AnimationObject animatedClips;
     public AnimationClipObject currentClip;
     public int frameIndex;
@@ -55,10 +53,6 @@ public class AnimatedObject : MonoBehaviour
         }
         if (sr != null)
             sr.sprite = currentClip.frames[frameIndex];
-        if (im != null)
-            im.sprite = currentClip.frames[frameIndex];
-        if (sm != null)
-            sm.sprite = currentClip.frames[frameIndex];
 
         timeSave = Time.time;
     }

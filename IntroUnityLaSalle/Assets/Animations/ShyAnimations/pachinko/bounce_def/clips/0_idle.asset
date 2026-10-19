@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f108ddc5f0241964c8b318910ba9df6a, type: 3}
+  m_Name: 0_idle
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationClipObject
+  frames:
+  - {fileID: -1344649180, guid: 7f9b6e9ea79496343a83c8d85ee38070, type: 3}
+  connectedAnimation: -1
+  resetFrameIndex: 0
+  framesPerSecond: 0
