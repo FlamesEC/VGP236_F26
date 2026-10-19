@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class ObstacleMover : MonoBehaviour
 {
-    public Vector3 StartPos;
+    protected Vector3 StartPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         StartPos = transform.position;    
     }

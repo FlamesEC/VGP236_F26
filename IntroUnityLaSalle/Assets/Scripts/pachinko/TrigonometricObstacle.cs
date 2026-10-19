@@ -1,13 +1,13 @@
 using NUnit.Framework;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class TrigonometricObstacle : ObstacleMover
 {
     public enum TrigonometricFunctions
     {
         SINE,
-        COSINE,
-        TANGENT
+        COSINE
     }
 
     [System.Serializable]
@@ -16,6 +16,7 @@ public class TrigonometricObstacle : ObstacleMover
         public TrigonometricFunctions type;
         public Vector3 scale;
         public float speed;
+        public float timeOffset;
     }
 
     public TrigonometricWeigh[] Afflictions;
@@ -37,17 +38,44 @@ public class TrigonometricObstacle : ObstacleMover
             switch (func)
             {
                 case TrigonometricFunctions.SINE:
-                    pos += Mathf.Sin(Time.time * weigh.speed) * weigh.scale;
+                    pos += Mathf.Sin((Time.time + weigh.timeOffset) * (weigh.speed / 100f)) * weigh.scale;
                     break;
                 case TrigonometricFunctions.COSINE:
-                    pos += Mathf.Cos(Time.time * weigh.speed) * weigh.scale;
-                    break;
-                case TrigonometricFunctions.TANGENT:
-                    pos += Mathf.Tan(Time.time * weigh.speed) * weigh.scale;
+                    pos += Mathf.Cos((Time.time + weigh.timeOffset) * (weigh.speed / 100f)) * weigh.scale;
                     break;
             }
         }
 
         return pos;
+    }
+
+    private void OnDrawGizmos()
+    {
+        foreach (TrigonometricWeigh weigh in Afflictions)
+        {
+            Color gizmoColor = Color.white;
+            switch (weigh.type)
+            {
+                case TrigonometricFunctions.SINE:
+                    gizmoColor = Color.red;
+                    break;
+                case TrigonometricFunctions.COSINE:
+                    gizmoColor = Color.yellow;
+                    break;
+            }
+
+            Gizmos.color = gizmoColor;
+
+            if (Application.isPlaying)
+            {
+                Gizmos.DrawLine(StartPos, StartPos + weigh.scale);
+                Gizmos.DrawLine(StartPos, StartPos - weigh.scale);
+            }
+            else
+            {
+                Gizmos.DrawLine(transform.position, transform.position + weigh.scale);
+                Gizmos.DrawLine(transform.position, transform.position - weigh.scale);
+            }
+        }
     }
 }

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimationObject
   clips:
   - {fileID: 11400000, guid: afa7e9954639d8641ad107a993a8264b, type: 2}
+  - {fileID: 11400000, guid: e6d28441c36a2444d8299bd3354c1b2c, type: 2}

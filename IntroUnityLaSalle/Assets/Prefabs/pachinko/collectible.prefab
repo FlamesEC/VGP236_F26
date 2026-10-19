@@ -102,9 +102,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2011576068954823870}
   - component: {fileID: 4745757712149083782}
+  - component: {fileID: 7180874450177438556}
   m_Layer: 0
   m_Name: collectible
-  m_TagString: Untagged
+  m_TagString: PointCollectible
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,6 +163,18 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.65
+--- !u!114 &7180874450177438556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011307163238127737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c37519edd5633ab4aba39f25c118e3eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PachinkoPoint
 --- !u!1 &8928406416474165005
 GameObject:
   m_ObjectHideFlags: 0

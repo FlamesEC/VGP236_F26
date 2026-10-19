@@ -16,4 +16,4 @@ MonoBehaviour:
   - {fileID: 1109992586, guid: 7f9b6e9ea79496343a83c8d85ee38070, type: 3}
   connectedAnimation: 0
   resetFrameIndex: 1
-  framesPerSecond: 1
+  framesPerSecond: 12
