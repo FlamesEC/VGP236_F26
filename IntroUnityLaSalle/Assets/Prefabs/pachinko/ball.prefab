@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4269137671985798829}
   m_Layer: 0
   m_Name: ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -112,6 +112,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PachinkoBall
   animator: {fileID: 1955638345423486092}
+  collider: {fileID: 1061641705735576889}
+  rb: {fileID: 5274399184092426202}
 --- !u!1 &4051011102792457920
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,8 @@ using UnityEngine;
 public class PachinkoBall : MonoBehaviour
 {
     public AnimatedObject animator;
+    public Collider2D collider;
+    public Rigidbody2D rb;
 
     private void OnEnable()
     {
@@ -13,6 +15,11 @@ public class PachinkoBall : MonoBehaviour
     private void Update()
     {
          if (transform.position.y < Pachinko.instance.BottomY - 10)
+            Destroy(gameObject);
+
+        Collider2D[] colls = new Collider2D[10];
+
+        if (collider.GetContacts(colls) > 0 && rb.linearVelocity.magnitude < 0.05f && Input.GetKeyDown(KeyCode.R))
             Destroy(gameObject);
     }
 
@@ -46,7 +53,7 @@ public class PachinkoBall : MonoBehaviour
             Pachinko.instance.StartFreeze(0.05f, 0.1f);
 
             if (collision.gameObject.tag == "BadBounce")
-                Pachinko.instance.AddPoints(-300);
+                Pachinko.instance.AddPoints(-2000);
         }
     }
 
