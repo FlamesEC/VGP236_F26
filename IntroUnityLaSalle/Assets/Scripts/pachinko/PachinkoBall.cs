@@ -26,6 +26,7 @@ public class PachinkoBall : MonoBehaviour
     private void OnDisable()
     {
         Pachinko.instance.cam.RemoveTarget(transform);
+        Pachinko.instance.PlayerDeath();
     }
 
     private void OnDestroy()

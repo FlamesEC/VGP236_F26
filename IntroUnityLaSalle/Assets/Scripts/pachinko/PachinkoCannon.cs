@@ -50,7 +50,7 @@ public class PachinkoCannon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (ballRuntime != null)
+        if (ballRuntime != null || !Pachinko.instance.CanPlay())
             return;
 
         CannonRotation();
@@ -83,6 +83,7 @@ public class PachinkoCannon : MonoBehaviour
 
         yield return new WaitForSeconds(0.01f);
         transform.localScale = Vector3.one;
+        Pachinko.instance.RemoveLife();
     }
     
     Vector2 GetThrowForce(float angle)
