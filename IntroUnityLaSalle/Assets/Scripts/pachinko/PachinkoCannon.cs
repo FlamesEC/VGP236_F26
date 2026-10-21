@@ -80,6 +80,8 @@ public class PachinkoCannon : MonoBehaviour
         Rigidbody2D rb = Instantiate(ball, spawn.position, Quaternion.identity).GetComponent<Rigidbody2D>();
         rb.AddForce(GetThrowForce(Mathf.DeltaAngle(0f, transform.rotation.eulerAngles.z)) + alteration, ForceMode2D.Impulse);
         ballRuntime = rb.gameObject;
+        AudioManager.instance.PlaySFX("sfx_tile");
+        AudioManager.instance.PlaySFX("sfx_damage");
 
         yield return new WaitForSeconds(0.01f);
         transform.localScale = Vector3.one;

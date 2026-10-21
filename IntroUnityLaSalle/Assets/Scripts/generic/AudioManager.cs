@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class audioManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
 {
+    public static AudioManager instance;
+
     public AudioSource clipSource;
     public List<AudioClip> clipList;
 
@@ -15,6 +17,18 @@ public class audioManager : MonoBehaviour
     float defaultVolumeMusic;
     bool fadingOut = false;
     float fadeoutTimestamp = 0;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            print($"INSTANCE OF {this.GetType()} ALREADY EXISTS.");
+            Destroy(this);
+            return;
+        }
+
+        instance = this;
+    }
 
     private void Start()
     {

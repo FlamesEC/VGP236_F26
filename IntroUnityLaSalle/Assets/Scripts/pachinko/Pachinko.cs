@@ -39,6 +39,7 @@ public class Pachinko : MonoBehaviour
     void Start()
     {
         ScoreText.text = "SCORE: " + Points.ToString("D6");
+        AudioManager.instance.PlayMusic("mus_microgame");
     }
 
     // Update is called once per frame

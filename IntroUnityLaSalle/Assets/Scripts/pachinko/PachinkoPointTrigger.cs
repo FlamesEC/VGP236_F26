@@ -16,5 +16,6 @@ public class PachinkoPointTrigger : MonoBehaviour
         ballHit = collision.gameObject;
 
         Pachinko.instance.AddPoints(points);
+        AudioManager.instance.PlaySFX("sfx_floor");
     }
 }

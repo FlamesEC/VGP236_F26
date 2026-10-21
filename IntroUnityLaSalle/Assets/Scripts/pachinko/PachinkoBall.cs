@@ -57,7 +57,12 @@ public class PachinkoBall : MonoBehaviour
             Pachinko.instance.StartFreeze(0.05f, 0.1f);
 
             if (collision.gameObject.tag == "BadBounce")
+            {
                 Pachinko.instance.AddPoints(-2000);
+                AudioManager.instance.PlaySFX("sfx_damage");
+            }
+            else
+                AudioManager.instance.PlaySFX("sfx_dash");
         }
     }
 
@@ -81,6 +86,8 @@ public class PachinkoBall : MonoBehaviour
             PachinkoPoint p = collision.GetComponent<PachinkoPoint>();
             if (p != null)
                 Pachinko.instance.AddPoints(Mathf.RoundToInt(p.points));
+
+            AudioManager.instance.PlaySFX("sfx_time");
 
             Destroy(collision.gameObject, 1);
         }
