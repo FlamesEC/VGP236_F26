@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class TrigonometricObstacle : ObstacleMover
 {
