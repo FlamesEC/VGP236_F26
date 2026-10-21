@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections.Tests.CoreCLR.TestJobs;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Pachinko : MonoBehaviour
@@ -79,11 +81,22 @@ public class Pachinko : MonoBehaviour
         hpIcons.rectTransform.sizeDelta = new Vector2(100 * Lives, 100);
     }
 
+    public void AddLife()
+    {
+        Lives++;
+        hpIcons.rectTransform.sizeDelta = new Vector2(100 * Lives, 100);
+    }
+
     public void PlayerDeath()
     {
         if (Lives <= 0)
         {
             leaderboard.LeaderboardObj.SetActive(true);
         }
+    }
+
+    public void ResetGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

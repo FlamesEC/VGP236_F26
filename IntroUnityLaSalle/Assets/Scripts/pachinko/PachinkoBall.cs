@@ -20,7 +20,10 @@ public class PachinkoBall : MonoBehaviour
         Collider2D[] colls = new Collider2D[10];
 
         if (collider.GetContacts(colls) > 0 && rb.linearVelocity.magnitude < 0.05f && Input.GetKeyDown(KeyCode.R))
+        {
+            Pachinko.instance.AddLife();
             Destroy(gameObject);
+        }
     }
 
     private void OnDisable()
