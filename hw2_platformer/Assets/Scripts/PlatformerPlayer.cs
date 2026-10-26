@@ -81,6 +81,7 @@ public class PlatformerPlayer : MonoBehaviour
     public float xDampedInputFactor = 0;
     private float xDampedPass = 0;
     private float jumpTimestamp = 0;
+    private float lastVelocityY = 0;
 
     [Space(15)]
     [Range(0f, 1f)]
@@ -101,6 +102,18 @@ public class PlatformerPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        MovementLogic();
+        JumpingLogic();
+        AnimationLogic();
+
+        lastVelocityY = rb.linearVelocityY;
+
+        foreach (KeyValuePair<string, InputObject> kp in keypresses)
+            kp.Value.EndOfFrame();
+    }
+
+    public void MovementLogic()
+    {
         xDampedInputFactor = Mathf.SmoothDamp(xDampedInputFactor, xInput, ref xDampedPass, xDampTime);
 
         rb.linearVelocityX = xDampedInputFactor * moveSpeed;
@@ -110,9 +123,11 @@ public class PlatformerPlayer : MonoBehaviour
         else if (xDampedInputFactor > 0)
             animator.sr.flipX = false;
 
-        //print(keypresses["Jump"].GetPressed());
+    }
 
-        if (!keypresses["Jump"].GetPressed() && Time.time - jumpTimestamp >= minimumJumpTime&& rb.linearVelocityY > 0.05f)
+    public void JumpingLogic()
+    {
+        if (!keypresses["Jump"].GetPressed() && Time.time - jumpTimestamp >= minimumJumpTime && rb.linearVelocityY > 0.05f)
             rb.linearVelocityY = 0;
         else if (keypresses["Jump"].GetStarted(jumpBufferTime))
         {
@@ -124,9 +139,26 @@ public class PlatformerPlayer : MonoBehaviour
                 rb.linearVelocityX *= 1.05f;
             }
         }
+    }
 
-        foreach (KeyValuePair<string, InputObject> kp in keypresses)
-            kp.Value.EndOfFrame();
+    public void AnimationLogic()
+    {
+        if (GetOnFloor())
+        {
+            if (Mathf.Abs(xDampedInputFactor) > 0.01f)
+                animator.changeAnimation(1, false);
+            else
+                animator.changeAnimation(0, false);
+        }
+        else
+        {
+            if (rb.linearVelocityY > 0)
+                animator.changeAnimation(2, false);
+            else if (rb.linearVelocityY < 0 && lastVelocityY >= 0)
+                animator.changeAnimation(3, false);
+            else if (rb.linearVelocityY < 0 && animator.currentClip != animator.animatedClips.clips[3] && animator.currentClip != animator.animatedClips.clips[4])
+                animator.changeAnimation(4, false);
+        }
     }
 
     bool GetOnFloor()

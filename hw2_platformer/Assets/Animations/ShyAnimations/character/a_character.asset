@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdede0bf452f2774ebd5a79add7744d3, type: 3}
+  m_Name: a_character
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationObject
+  clips:
+  - {fileID: 11400000, guid: eec2fe2fe50e4224ead7440c7ce1aea6, type: 2}
+  - {fileID: 11400000, guid: 198ddf9a207fba540af74ee376761b4e, type: 2}
+  - {fileID: 11400000, guid: 8027a5d95ebb3764287b8d6553d02305, type: 2}
+  - {fileID: 11400000, guid: d2d55438d7fbe22419013e9e29be03fc, type: 2}
+  - {fileID: 11400000, guid: 18dcf5ac3c2b5684c94d9a6ee1682383, type: 2}

@@ -57,9 +57,12 @@ public class AnimatedObject : MonoBehaviour
         timeSave = Time.time;
     }
 
-    public void changeAnimation(int clipIndex)
+    public void changeAnimation(int clipIndex, bool restart = true)
     {
         if (animatedClips == null)
+            return;
+
+        if (currentClip == animatedClips.clips[clipIndex] && !restart)
             return;
 
         //print(clipIndex);

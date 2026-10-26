@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedObject
   sr: {fileID: 141313743}
-  animatedClips: {fileID: 0}
+  animatedClips: {fileID: 11400000, guid: bfba6ab9c82c17944b883cfc870f95c9, type: 2}
   currentClip: {fileID: 0}
   frameIndex: 0
   speedMultiplier: 1
@@ -972,7 +972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedObject
   sr: {fileID: 918767830}
-  animatedClips: {fileID: 0}
+  animatedClips: {fileID: 11400000, guid: bfba6ab9c82c17944b883cfc870f95c9, type: 2}
   currentClip: {fileID: 0}
   frameIndex: 0
   speedMultiplier: 1
