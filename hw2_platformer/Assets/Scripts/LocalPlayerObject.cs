@@ -11,6 +11,11 @@ public class LocalPlayerObject : MonoBehaviour
     public Move movePlayer;
     public Jump jumpPlayer;
 
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     public void InputMove(InputAction.CallbackContext ctx)
     {
         if (movePlayer == null)

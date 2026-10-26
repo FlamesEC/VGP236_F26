@@ -28,12 +28,23 @@ public class PlatformerPlayer : MonoBehaviour
             lastReleaseTimestamp = Time.time;
         }
 
+        public bool GetStarted(float bufferTime = 0)
+        {
+            if (started)
+                return true;
+
+            if (bufferTime > 0 && Time.time - lastPressTimestamp <= bufferTime)
+                return true;
+
+            return false;
+        }
+
         public bool GetPressed(float bufferTime = 0)
         {
             if (performing)
                 return true;
 
-            if (Time.time - lastReleaseTimestamp <= bufferTime)
+            if (bufferTime > 0 && Time.time - lastReleaseTimestamp <= bufferTime)
                 return true;
 
             return false;
@@ -47,8 +58,8 @@ public class PlatformerPlayer : MonoBehaviour
 
         public InputObject()
         {
-            lastPressTimestamp = Time.time;
-            lastReleaseTimestamp = Time.time;
+            lastPressTimestamp = 0;
+            lastReleaseTimestamp = 0;
             performing = false;
             started = false;
             released = false;
@@ -63,13 +74,22 @@ public class PlatformerPlayer : MonoBehaviour
     [Space(15)]
     public Rigidbody2D rb;
     public Collider2D col;
+    public AnimatedObject animator;
+
+    [Space(15)]
+    public float xInput = 0;
+    public float xDampedInputFactor = 0;
+    private float xDampedPass = 0;
+    private float jumpTimestamp = 0;
 
     [Space(15)]
     [Range(0f, 1f)]
+    public float xDampTime = 0.7f;
     public float normalWeight = 0.5f;
     public float moveSpeed;
     public float jumpForce;
     public float jumpBufferTime = 0.2f;
+    public float minimumJumpTime = 0.1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -81,14 +101,29 @@ public class PlatformerPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (keypresses["Jump"].GetPressed(jumpBufferTime))
-        {
-            print("JUMP");
-            if (GetOnFloor())
-                rb.linearVelocityY = jumpForce;
-        }
-        else if (keypresses["Jump"].released && rb.linearVelocityY > 0.05f)
+        xDampedInputFactor = Mathf.SmoothDamp(xDampedInputFactor, xInput, ref xDampedPass, xDampTime);
+
+        rb.linearVelocityX = xDampedInputFactor * moveSpeed;
+
+        if (xDampedInputFactor < 0)
+            animator.sr.flipX = true;
+        else if (xDampedInputFactor > 0)
+            animator.sr.flipX = false;
+
+        //print(keypresses["Jump"].GetPressed());
+
+        if (!keypresses["Jump"].GetPressed() && Time.time - jumpTimestamp >= minimumJumpTime&& rb.linearVelocityY > 0.05f)
             rb.linearVelocityY = 0;
+        else if (keypresses["Jump"].GetStarted(jumpBufferTime))
+        {
+            //print("JUMP");
+            if (GetOnFloor())
+            {
+                jumpTimestamp = Time.time;
+                rb.linearVelocityY = jumpForce;
+                rb.linearVelocityX *= 1.05f;
+            }
+        }
 
         foreach (KeyValuePair<string, InputObject> kp in keypresses)
             kp.Value.EndOfFrame();
@@ -117,26 +152,45 @@ public class PlatformerPlayer : MonoBehaviour
 
     public void Move(InputAction.CallbackContext ctx)
     {
-        
+        xInput = ctx.ReadValue<Vector2>().x;
+        if (xInput > 0) xInput = Mathf.Ceil(xInput);
+        if (xInput < 0) xInput = Mathf.Floor(xInput);
     }
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        Debug.Log($"Jump phase: {ctx.phase}");
+
+        if (ctx.started)
+        {
+            Debug.Log("Jump started");
             keypresses["Jump"].PressKey();
+        }
         else if (ctx.canceled)
+        {
+            Debug.Log("Jump canceled");
             keypresses["Jump"].ReleaseKey();
+        }
     }
 
     public void AddInput(LocalPlayerObject p)
     {
         inputObject = p;
-        inputObject.movePlayer = Move;
-        inputObject.jumpPlayer = Jump;
+        inputObject.movePlayer += Move;
+        inputObject.jumpPlayer += Jump;
     }
 
     public void RemoveInput()
     {
         inputObject = null;
+    }
+
+    private void OnDestroy()
+    {
+        if (inputObject == null)
+            return;
+
+        inputObject.movePlayer -= Move;
+        inputObject.jumpPlayer -= Jump;
     }
 }
