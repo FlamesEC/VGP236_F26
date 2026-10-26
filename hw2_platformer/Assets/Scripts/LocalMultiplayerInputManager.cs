@@ -5,15 +5,17 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class LocalMultiplayerInputManager : MonoBehaviour
 {
-    static LocalMultiplayerInputManager instance;
+    public static LocalMultiplayerInputManager instance;
 
     public List<Gamepad> inputGamepads;
     public List<GameObject> inputGamepadGameObjects;
 
     public GameObject playerPrefab;
+    public PlayerInputManager inputManager;
 
     public GameObject inputWASD;
     public GameObject inputArrows;
@@ -39,6 +41,9 @@ public class LocalMultiplayerInputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (AmountOfPlayers() >= inputManager.maxPlayerCount)
+            return;
+
         KeyboardManager();
         GamepadManager();
     }
@@ -51,12 +56,18 @@ public class LocalMultiplayerInputManager : MonoBehaviour
         {
             var Player = PlayerInput.Instantiate(playerPrefab, controlScheme: "WASD", pairWithDevice: Keyboard.current);
             inputWASD = Player.gameObject;
+
+            if (GameManagerBase.instance != null)
+                GameManagerBase.instance.ConnectPlayer(inputWASD.GetComponent<LocalPlayerObject>());
         }
 
         if (inputArrows == null && Keyboard.current.upArrowKey.wasPressedThisFrame)
         {
             var Player = PlayerInput.Instantiate(playerPrefab, controlScheme: "Arrows", pairWithDevice: Keyboard.current);
             inputArrows = Player.gameObject;
+
+            if (GameManagerBase.instance != null)
+                GameManagerBase.instance.ConnectPlayer(inputArrows.GetComponent<LocalPlayerObject>());
         }
     }
 
@@ -75,5 +86,45 @@ public class LocalMultiplayerInputManager : MonoBehaviour
         
         inputGamepads.Add(Gamepad.current);
         inputGamepadGameObjects.Add(Player.gameObject);
+
+        if (GameManagerBase.instance != null)
+            GameManagerBase.instance.ConnectPlayer(Player.gameObject.GetComponent<LocalPlayerObject>());
+    }
+
+    public int AmountOfPlayers()
+    {
+        int players = 0;
+
+        if (inputWASD != null) players++;
+        if (inputArrows != null) players++;
+
+        for (int i = 0; i < inputGamepads.Count; i++)
+        {
+            if (inputGamepads[i] != null)
+                players++;
+        }
+
+        return players;
+    }
+
+    public void DisconnectPlayer(LocalPlayerObject p)
+    {
+        GameObject g = p.gameObject;
+
+        for (int i = 0; i < inputGamepads.Count; i++)
+        {
+            if (inputGamepadGameObjects[i] != g)
+                continue;
+
+            inputGamepadGameObjects.RemoveAt(i);
+            inputGamepads.RemoveAt(i);
+
+            break;
+        }
+
+        if (GameManagerBase.instance != null)
+            GameManagerBase.instance.DisconnectPlayer(p);
+
+        Destroy(g);
     }
 }

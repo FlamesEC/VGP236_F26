@@ -1,28 +1,34 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
 public class LocalPlayerObject : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public delegate void Move(InputAction.CallbackContext ctx);
+    public delegate void Jump(InputAction.CallbackContext ctx);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Move movePlayer;
+    public Jump jumpPlayer;
 
     public void InputMove(InputAction.CallbackContext ctx)
     {
+        if (movePlayer == null)
+            return;
 
+        movePlayer(ctx);
     }
 
-    public void InputJump(in InputAction.CallbackContext ctx)
+    public void InputJump(InputAction.CallbackContext ctx)
     {
+        if (movePlayer == null)
+            return;
 
+        jumpPlayer(ctx);
+    }
+
+    public void DisconnectInput()
+    {
+        LocalMultiplayerInputManager.instance.DisconnectPlayer(this);
     }
 }
