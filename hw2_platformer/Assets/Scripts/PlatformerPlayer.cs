@@ -70,6 +70,7 @@ public class PlatformerPlayer : MonoBehaviour
 
     public LocalPlayerObject inputObject;
     public PlatformerManager manager;
+    public int playerIndex = -1;
 
     [Space(15)]
     public Rigidbody2D rb;
@@ -95,6 +96,8 @@ public class PlatformerPlayer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
+
         keypresses = new Dictionary<string, InputObject>();
         keypresses.Add("Jump", new InputObject());
     }
@@ -115,6 +118,12 @@ public class PlatformerPlayer : MonoBehaviour
     public void MovementLogic()
     {
         xDampedInputFactor = Mathf.SmoothDamp(xDampedInputFactor, xInput, ref xDampedPass, xDampTime);
+
+        if (Mathf.Abs(xInput - xDampedInputFactor) < 0.01f)
+            xDampedInputFactor = xInput;
+
+        if (!GetOnFloor())
+            xDampedInputFactor = xInput;
 
         rb.linearVelocityX = xDampedInputFactor * moveSpeed;
 
@@ -161,7 +170,7 @@ public class PlatformerPlayer : MonoBehaviour
         }
     }
 
-    bool GetOnFloor()
+    public bool GetOnFloor()
     {
         ContactPoint2D[] contacts = new ContactPoint2D[10];
         int count = col.GetContacts(contacts);
@@ -185,24 +194,35 @@ public class PlatformerPlayer : MonoBehaviour
     public void Move(InputAction.CallbackContext ctx)
     {
         xInput = ctx.ReadValue<Vector2>().x;
+        float y = ctx.ReadValue<Vector2>().y;
+
+        if (ctx.control.device is Gamepad && Mathf.Abs(y) > 0.65f)
+            xInput = 0;
+
         if (xInput > 0) xInput = Mathf.Ceil(xInput);
         if (xInput < 0) xInput = Mathf.Floor(xInput);
     }
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"Jump phase: {ctx.phase}");
-
         if (ctx.started)
         {
-            Debug.Log("Jump started");
+            //Debug.Log("Jump started");
             keypresses["Jump"].PressKey();
         }
         else if (ctx.canceled)
         {
-            Debug.Log("Jump canceled");
+            //Debug.Log("Jump canceled");
             keypresses["Jump"].ReleaseKey();
         }
+    }
+
+    public void Switch(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed)
+            return;
+
+        manager.PlayerSwitchInput(playerIndex);
     }
 
     public void AddInput(LocalPlayerObject p)
@@ -210,6 +230,7 @@ public class PlatformerPlayer : MonoBehaviour
         inputObject = p;
         inputObject.movePlayer += Move;
         inputObject.jumpPlayer += Jump;
+        inputObject.switchPlayer += Switch;
     }
 
     public void RemoveInput()
@@ -224,5 +245,12 @@ public class PlatformerPlayer : MonoBehaviour
 
         inputObject.movePlayer -= Move;
         inputObject.jumpPlayer -= Jump;
+        inputObject.switchPlayer -= Switch;
+    }
+
+    private void OnDisable()
+    {
+        rb.linearVelocity = new Vector2(0, rb.linearVelocityY);
+        animator.changeAnimation(0);
     }
 }

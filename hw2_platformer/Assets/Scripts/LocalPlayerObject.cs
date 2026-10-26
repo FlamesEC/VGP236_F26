@@ -7,9 +7,11 @@ public class LocalPlayerObject : MonoBehaviour
 {
     public delegate void Move(InputAction.CallbackContext ctx);
     public delegate void Jump(InputAction.CallbackContext ctx);
+    public delegate void Switch(InputAction.CallbackContext ctx);
 
     public Move movePlayer;
     public Jump jumpPlayer;
+    public Switch switchPlayer;
 
     private void Start()
     {
@@ -26,10 +28,18 @@ public class LocalPlayerObject : MonoBehaviour
 
     public void InputJump(InputAction.CallbackContext ctx)
     {
-        if (movePlayer == null)
+        if (jumpPlayer == null)
             return;
 
         jumpPlayer(ctx);
+    }
+
+    public void InputSwitch(InputAction.CallbackContext ctx)
+    {
+        if (switchPlayer == null)
+            return;
+
+        switchPlayer(ctx);
     }
 
     public void DisconnectInput()

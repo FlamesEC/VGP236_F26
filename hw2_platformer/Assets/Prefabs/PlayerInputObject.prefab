@@ -102,6 +102,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: a2f3bb20-c1c7-42d3-81e7-37b545f076cc
     m_ActionName: 'Player/Jump[/Keyboard/w,/Keyboard/upArrow]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9168233742456273190}
+        m_TargetAssemblyTypeName: LocalPlayerObject, Assembly-CSharp
+        m_MethodName: InputSwitch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 14ac1d40-624d-44c9-987f-910b30ce7b59
+    m_ActionName: 'Player/Switch[/XInputControllerWindows/buttonWest,/Keyboard/e,/Keyboard/leftShift,/Keyboard/q,/Keyboard/s,/Keyboard/downArrow,/Keyboard/rightShift,/Keyboard/numpad0,/Keyboard/enter,/XInputControllerWindows/leftTrigger,/XInputControllerWindows/rightTrigger]'
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

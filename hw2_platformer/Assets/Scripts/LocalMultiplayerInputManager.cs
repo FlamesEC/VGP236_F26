@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class LocalMultiplayerInputManager : MonoBehaviour
 {
@@ -22,10 +21,12 @@ public class LocalMultiplayerInputManager : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
+
         if (instance != null)
         {
             print($"INSTANCE OF {this.GetType()} ALREADY EXISTS.");
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
