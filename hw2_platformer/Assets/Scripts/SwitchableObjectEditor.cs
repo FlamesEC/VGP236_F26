@@ -19,6 +19,9 @@ public class SwitchableObjectEditor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Application.isPlaying)
+            return;
+
         if (manager == null)
             return;
 

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdede0bf452f2774ebd5a79add7744d3, type: 3}
+  m_Name: a_deathcharacter
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationObject
+  clips:
+  - {fileID: 11400000, guid: 576e8acc69cd4284c8e4285304b8c8a8, type: 2}
+  - {fileID: 11400000, guid: 92d78e0da10f9704dbb94b13de1f5f23, type: 2}

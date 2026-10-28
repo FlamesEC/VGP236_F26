@@ -42,12 +42,13 @@ public class PlatformerManager : GameManagerBase
 
     }
 
-    public void EndLevel()
+    public void EndLevel(bool restart = false)
     {
-        StartCoroutine(EndLevelCoroutine());
+        StopAllCoroutines();
+        StartCoroutine(EndLevelCoroutine(restart));
     }
 
-    IEnumerator EndLevelCoroutine()
+    IEnumerator EndLevelCoroutine(bool restart)
     {
         for (int i = 0; i < players.Length; i++)
             players[i].player.enabled = false;
@@ -60,17 +61,17 @@ public class PlatformerManager : GameManagerBase
         yield return new WaitForSeconds(l.transitionStart.length);
         yield return new WaitForEndOfFrame();
 
-        ChangeLevel();
+        ChangeLevel(restart);
     }
 
-    public async void ChangeLevel()
+    public async void ChangeLevel(bool restart)
     {
         switchObjects.Clear();
         
         foreach (PlayerScene player in players)
             player.player.gameObject.SetActive(false);
 
-        int sceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex + (restart ? 0 : 1);
         if (sceneIndex >= SceneManager.sceneCountInBuildSettings) sceneIndex = 0;
 
         currentPlayerSwitch = 0;

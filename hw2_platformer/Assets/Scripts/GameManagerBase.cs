@@ -7,25 +7,19 @@ public class GameManagerBase : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        Application.targetFrameRate = 60;
-
         if (instance != null)
         {
             Destroy(gameObject);
             return;
         }
 
+        Application.targetFrameRate = 60;
+
         DontDestroyOnLoad(gameObject);
         instance = this;
     }
 
-    public virtual void DisconnectPlayer(LocalPlayerObject p)
-    {
+    public virtual void DisconnectPlayer(LocalPlayerObject p) {}
 
-    }
-
-    public virtual void ConnectPlayer(LocalPlayerObject p)
-    {
-
-    }
+    public virtual void ConnectPlayer(LocalPlayerObject p) {}
 }

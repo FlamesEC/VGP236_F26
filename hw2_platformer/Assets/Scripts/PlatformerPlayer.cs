@@ -76,6 +76,7 @@ public class PlatformerPlayer : MonoBehaviour
     public Rigidbody2D rb;
     public Collider2D col;
     public AnimatedObject animator;
+    public GameObject deathObject;
 
     [Space(15)]
     public float xInput = 0;
@@ -83,6 +84,10 @@ public class PlatformerPlayer : MonoBehaviour
     private float xDampedPass = 0;
     private float jumpTimestamp = 0;
     private float lastVelocityY = 0;
+    private float lastFloorTime = 0;
+    private bool lastFloor = false;
+    bool jumping = false; // Only used for floor buffering
+    bool dead = false; // Used for single death effect
 
     [Space(15)]
     [Range(0f, 1f)]
@@ -92,6 +97,7 @@ public class PlatformerPlayer : MonoBehaviour
     public float jumpForce;
     public float jumpBufferTime = 0.2f;
     public float minimumJumpTime = 0.1f;
+    public float floorBufferTime = 0.1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -100,6 +106,8 @@ public class PlatformerPlayer : MonoBehaviour
 
         keypresses = new Dictionary<string, InputObject>();
         keypresses.Add("Jump", new InputObject());
+
+        lastFloor = GetOnFloor();
     }
 
     // Update is called once per frame
@@ -110,9 +118,13 @@ public class PlatformerPlayer : MonoBehaviour
         AnimationLogic();
 
         lastVelocityY = rb.linearVelocityY;
+        lastFloor = GetOnFloor();
 
         foreach (KeyValuePair<string, InputObject> kp in keypresses)
             kp.Value.EndOfFrame();
+
+        if (transform.position.y < -5)
+            manager.EndLevel(true);
     }
 
     public void MovementLogic()
@@ -136,13 +148,22 @@ public class PlatformerPlayer : MonoBehaviour
 
     public void JumpingLogic()
     {
+        if (lastFloor != GetOnFloor())
+        {
+            if (!GetOnFloor())
+                lastFloorTime = Time.time;
+            else
+                jumping = false;
+        }
+
         if (!keypresses["Jump"].GetPressed() && Time.time - jumpTimestamp >= minimumJumpTime && rb.linearVelocityY > 0.05f)
             rb.linearVelocityY = 0;
         else if (keypresses["Jump"].GetStarted(jumpBufferTime))
         {
             //print("JUMP");
-            if (GetOnFloor())
+            if ((GetOnFloor() || (Time.time - lastFloorTime <= floorBufferTime)) && !jumping)
             {
+                jumping = true;
                 jumpTimestamp = Time.time;
                 rb.linearVelocityY = jumpForce;
                 rb.linearVelocityX *= 1.05f;
@@ -248,9 +269,42 @@ public class PlatformerPlayer : MonoBehaviour
         inputObject.switchPlayer -= Switch;
     }
 
+    private void OnEnable()
+    {
+        animator.sr.enabled = true;
+        dead = false;
+    }
+
     private void OnDisable()
     {
         rb.linearVelocity = new Vector2(0, rb.linearVelocityY);
-        animator.changeAnimation(0);
+        animator.changeAnimation(0, false);
+    }
+
+    bool DirectionDeath(float killerAngle)
+    {
+        if (killerAngle == 0 && rb.linearVelocityY > 0.1f)
+            return false;
+        if (killerAngle == 180 && rb.linearVelocityY < -0.1f)
+            return false;
+
+        return true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!dead && collision.tag == "Kill")
+        {
+            if (DirectionDeath(collision.gameObject.transform.rotation.eulerAngles.z))
+                KillPlayer();
+        }
+    }
+
+    public void KillPlayer()
+    {
+        manager.EndLevel(true);
+        animator.sr.enabled = false;
+        Instantiate(deathObject, transform.position, Quaternion.identity);
+        dead = true;
     }
 }
