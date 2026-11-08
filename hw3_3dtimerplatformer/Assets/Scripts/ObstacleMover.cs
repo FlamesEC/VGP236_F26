@@ -1,23 +1,24 @@
 using UnityEngine;
 
-public class ObstacleMover : MonoBehaviour
+public class ObstacleMover : InheritableVelocityObject
 {
+    protected Vector3 StartSpeed;
     protected Vector3 StartPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        StartPos = transform.position;    
+        StartPos = transform.position;
     }
 
-    public virtual Vector3 GetNewPos()
+    public virtual Vector3 GetNewSpeed()
     {
-        return StartPos;
+        return StartSpeed;
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void ObjectUpdate()
     {
-        transform.position = GetNewPos();
+        selfVelocity = GetNewSpeed();;
     }
 }

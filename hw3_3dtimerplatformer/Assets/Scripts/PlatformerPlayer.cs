@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Windows;
 
-public class PlatformerPlayer : MomentumableObject
+public class PlatformerPlayer : InheritableVelocityObject
 {
     [Serializable]
     public class InputObject
@@ -148,19 +148,22 @@ public class PlatformerPlayer : MomentumableObject
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void ObjectUpdate()
     {
         MovementLogic();
         LookingLogic();
         JumpingLogic();
+
+        Vector3 gravity = gravityForce * gravityScale * -Vector3.up;
+
+        if (!groundCheck.GetOnFloor())
+            selfVelocity += gravity * Time.deltaTime;
 
         lastVelocityY = selfVelocity.y;
         lastFloor = groundCheck.GetOnFloor();
 
         foreach (KeyValuePair<string, InputObject> kp in keypresses)
             kp.Value.EndOfFrame();
-
-        ApplyMomentum();
     }
 
     private void LateUpdate()
@@ -178,16 +181,6 @@ public class PlatformerPlayer : MomentumableObject
             shadowObject.size = Vector2.one * (shadowDefSize * ((shadowDistance - ray.distance) / shadowDistance));
             shadowObject.transform.position = ray.point + new Vector3(0, 0.01f, 0);
         }
-    }
-
-    private void FixedUpdate()
-    {
-        Vector3 gravity = gravityForce * gravityScale * -Vector3.up;
-
-        if (!groundCheck.GetOnFloor())
-            selfVelocity += gravity * Time.fixedDeltaTime;
-
-        ApplyMomentum();
     }
 
     public void MovementLogic()
