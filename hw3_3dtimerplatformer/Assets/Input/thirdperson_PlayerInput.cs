@@ -97,7 +97,7 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
                     ""type"": ""Value"",
                     ""id"": ""5a119716-aa14-4538-b019-6bdf9fe93198"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
+                    ""processors"": ""NormalizeVector2"",
                     ""interactions"": """",
                     ""initialStateCheck"": true,
                     ""priority"": 0
@@ -120,6 +120,16 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Dive"",
+                    ""type"": ""Button"",
+                    ""id"": ""5674c31e-4c28-45cb-a4f1-ce0c1b307f66"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
                     ""priority"": 0
                 }
             ],
@@ -233,6 +243,61 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6314e692-e341-449c-9e04-e809d4f3f169"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3cb94021-da26-4af0-a2c4-e4713d0eede9"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e251026-36d5-416e-b13e-0e775f575739"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""256bcfdb-5385-4f42-9661-963e2b91284a"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""35135ec3-45a7-445f-9a0c-dc678bdf92c7"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -244,6 +309,7 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+        m_Player_Dive = m_Player.FindAction("Dive", throwIfNotFound: true);
     }
 
     ~@thirdperson_PlayerInput()
@@ -327,6 +393,7 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Look;
+    private readonly InputAction m_Player_Dive;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -350,6 +417,10 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
         /// Provides access to the underlying input action "Player/Look".
         /// </summary>
         public InputAction @Look => m_Wrapper.m_Player_Look;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Dive".
+        /// </summary>
+        public InputAction @Dive => m_Wrapper.m_Player_Dive;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -385,6 +456,9 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Dive.started += instance.OnDive;
+            @Dive.performed += instance.OnDive;
+            @Dive.canceled += instance.OnDive;
         }
 
         /// <summary>
@@ -405,6 +479,9 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Dive.started -= instance.OnDive;
+            @Dive.performed -= instance.OnDive;
+            @Dive.canceled -= instance.OnDive;
         }
 
         /// <summary>
@@ -466,5 +543,12 @@ public partial class @thirdperson_PlayerInput: IInputActionCollection2, IDisposa
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Dive" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDive(InputAction.CallbackContext context);
     }
 }
