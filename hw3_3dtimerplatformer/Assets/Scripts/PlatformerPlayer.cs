@@ -85,6 +85,8 @@ public class PlatformerPlayer : InheritableVelocityObject
     //float selfRotY = 0;
     float shadowDefSize = 2;
     Vector2 moveInput;
+    public bool canMove = true;
+    public bool blockRotationOnDive = true;
 
     [Space(15)]
     private float jumpTimestamp = 0;
@@ -121,6 +123,7 @@ public class PlatformerPlayer : InheritableVelocityObject
     public float diveChainTime = 1;
     public bool onDiveTime = false;
     Vector3 diveVec = Vector3.zero;
+    Vector3 diveDir = Vector3.zero;
 
     [Space(15)]
     public float gravityForce = -9.81f;
@@ -144,8 +147,6 @@ public class PlatformerPlayer : InheritableVelocityObject
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
-
         gravityScale = jumpGravityScale;
         camRotX = cameraRotator.localRotation.eulerAngles.x;
         SetSelfRotation(new Vector3(0, transform.localRotation.eulerAngles.y));
@@ -209,6 +210,13 @@ public class PlatformerPlayer : InheritableVelocityObject
 
     public void MovementLogic()
     {
+        if (!canMove)
+        {
+            moveInput = Vector3.zero;
+            selfVelocity = Vector3.up * selfVelocity.y;
+            return;
+        }
+
         moveInput = PlayInput.Player.Move.ReadValue<Vector2>();
 
         if (Mathf.Abs(moveInput.x) < 0.3f && Mathf.Abs(moveInput.y) < 0.3f)
@@ -220,12 +228,23 @@ public class PlatformerPlayer : InheritableVelocityObject
         if (currentDiveForce > 0)
             forwardsFactor = currentDiveForce / diveForce;
 
-        moveVector += forwardsFactor * transform.forward;
-        moveVector += moveInput.x * transform.right;
+        Vector3 fwd = transform.forward;
+        if (GetOnDive() && blockRotationOnDive)
+            fwd = diveDir;
+
+        moveVector += forwardsFactor * fwd;
+
+        if (!GetOnDive() || !blockRotationOnDive)
+            moveVector += moveInput.x * transform.right;
 
         moveVector *= moveSpeed;
 
         selfVelocity = new Vector3(moveVector.x, selfVelocity.y, moveVector.z);
+    }
+
+    public bool GetOnDive()
+    {
+        return currentDiveForce > 0 && onDiveTime && !groundCheck.GetOnFloor();
     }
 
     public void JumpingLogic()
@@ -248,6 +267,9 @@ public class PlatformerPlayer : InheritableVelocityObject
                 reachFloorTime = Time.time;
             }
         }
+
+        if (!canMove)
+            return;
 
         if (selfVelocity.y < 0 && (gravityScale == jumpGravityScale || gravityScale == airJumpGravityScale))
             gravityScale = fallGravityScale;
@@ -277,6 +299,9 @@ public class PlatformerPlayer : InheritableVelocityObject
 
     public void LookingLogic()
     {
+        if (!canMove)
+            return;
+
         Vector2 input = PlayInput.Player.Look.ReadValue<Vector2>();
 
         if (Mathf.Abs(input.magnitude) < 0.05f)
@@ -294,7 +319,7 @@ public class PlatformerPlayer : InheritableVelocityObject
 
     public void DiveLogic()
     {
-        if (keypresses["Dive"].GetStarted())
+        if (keypresses["Dive"].GetStarted() && canMove)
         {
             if ((groundCheck.GetOnFloor() && (Time.time - reachFloorTime >= diveChainTime || !onDiveTime)) || (!groundCheck.GetOnFloor() && usableDiveCount - currentDives > 0))
             {
@@ -304,6 +329,7 @@ public class PlatformerPlayer : InheritableVelocityObject
                 selfVelocity += Vector3.up * diveJumpForce;
                 currentDives++;
                 gravityScale = diveGravityScale;
+                diveDir = transform.forward;
             }
         }
 
@@ -320,7 +346,10 @@ public class PlatformerPlayer : InheritableVelocityObject
             }
         }
 
-        diveVec = transform.forward * currentDiveForce;
+        if (GetOnDive() && blockRotationOnDive)
+            diveVec = diveDir * currentDiveForce;
+        else
+            diveVec = transform.forward * currentDiveForce;
     }
 
     public void AnimationLogic()
@@ -332,7 +361,7 @@ public class PlatformerPlayer : InheritableVelocityObject
         }
 
         Vector3 parentRot = GetRotation() - selfRotation;
-        if (Mathf.Abs(Vector3.Scale(selfVelocity, new Vector3(1, 0, 1)).magnitude) >= 0.05f)
+        if (Mathf.Abs(Vector3.Scale(selfVelocity, new Vector3(1, 0, 1)).magnitude) >= 0.05f && (!GetOnDive() || !blockRotationOnDive))
         {
             modelRot = transform.rotation;
             parentRot = Vector3.zero;
@@ -343,7 +372,7 @@ public class PlatformerPlayer : InheritableVelocityObject
         animator.SetFloat("XSpeed", Mathf.Abs(Vector3.Scale(selfVelocity, new Vector3(1, 0, 1)).magnitude));
         animator.SetFloat("YSpeed", selfVelocity.y);
         animator.SetFloat("YSpeedDelta", selfVelocity.y - lastVelocityY);
-        animator.SetFloat("Input", Mathf.Abs(moveInput.magnitude));
+        animator.SetFloat("Input", canMove ? Mathf.Abs(moveInput.magnitude) : 0);
         animator.SetFloat("DirectionX", transform.InverseTransformDirection(selfVelocity).x / moveSpeed);
         animator.SetFloat("DirectionY", transform.InverseTransformDirection(selfVelocity).z / moveSpeed);
         animator.SetBool("OnGround", groundCheck.GetOnFloor());
@@ -410,7 +439,7 @@ public class PlatformerPlayer : InheritableVelocityObject
         jumping = false;
         selfVelocity = Vector3.zero;
 
-        diveChainTime = -10;
+        //diveChainTime = -10;
         jumpTimestamp = -10;
         reachFloorTime = -10;
         lastFloorTime = -10;

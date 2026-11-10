@@ -9,6 +9,8 @@ public class ObstacleMover : InheritableVelocityObject
     void Awake()
     {
         StartPos = transform.position;
+        SetSelfRotation(transform.rotation.eulerAngles);
+        SetSelfRotation(transform.rotation.eulerAngles);
     }
 
     public virtual Vector3 GetNewSpeed()
@@ -19,6 +21,6 @@ public class ObstacleMover : InheritableVelocityObject
     // Update is called once per frame
     protected override void ObjectUpdate()
     {
-        selfVelocity = GetNewSpeed();;
+        selfVelocity = GetNewSpeed();
     }
 }

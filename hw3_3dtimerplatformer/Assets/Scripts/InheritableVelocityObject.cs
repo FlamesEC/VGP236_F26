@@ -13,10 +13,12 @@ public class InheritableVelocityObject : MonoBehaviour
     public float airFriction;
 
     public bool applyParentRot = true;
+    public bool applyNegativeLeaveForces = false;
+    public bool considerRot = true;
 
     [Space(15)]
     [Tooltip("If this momentumLayer is higher than the layer on the colliding momentumLayer, it ignores it")]
-    public int layer;
+    public int layer = 1;
 
     protected List<InheritableVelocityObject> objectQueue;
     protected List<InheritableVelocityObject> velocityAdditions;
@@ -143,7 +145,8 @@ public class InheritableVelocityObject : MonoBehaviour
             rotationAdditions = new List<InheritableVelocityObject>();
 
         foreach (InheritableVelocityObject r in rotationAdditions)
-            rot += r.GetRotation();
+            if (r.considerRot)
+                rot += r.GetRotation();
 
         return rot;
     }
@@ -244,7 +247,7 @@ public class InheritableVelocityObject : MonoBehaviour
         {
             InheritableVelocityObject v = collision.gameObject.GetComponent<InheritableVelocityObject>();
 
-            if ((groundFriction > 0 || airFriction > 0) && objectQueue.Contains(v))
+            if ((groundFriction > 0 || airFriction > 0) && objectQueue.Contains(v) && (v.GetVelocity().y > 0 || applyNegativeLeaveForces))
                 momentumValues.Add(Vector3.Scale(v.GetVelocity(), Vector3.up));
 
             objectQueue.Remove(v);

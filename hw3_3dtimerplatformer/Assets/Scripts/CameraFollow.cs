@@ -24,7 +24,7 @@ public class CameraFollow : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(rootTarget.position, dir, out hit, dis, blockCameraLayers))
+        if (Physics.Raycast(rootTarget.position, dir, out hit, dis, blockCameraLayers, QueryTriggerInteraction.Ignore))
             pos = hit.point;
 
         transform.position = pos;
