@@ -36,6 +36,17 @@ public class GroundCheck : MonoBehaviour
         contactPoints[collision.collider] = new List<ContactPoint>(contacts);
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        if (!contactPoints.ContainsKey(collision.collider))
+            return;
+
+        ContactPoint[] contacts = new ContactPoint[10];
+        int count = collision.GetContacts(contacts);
+
+        contactPoints[collision.collider] = new List<ContactPoint>(contacts);
+    }
+
     private void OnCollisionExit(Collision collision)
     {
         contactPoints.Remove(collision.collider);

@@ -286,6 +286,8 @@ public class PlatformerPlayer : InheritableVelocityObject
                 selfVelocity = new Vector3(selfVelocity.x, jumpForce, selfVelocity.z);
                 gravityScale = jumpGravityScale;
 
+                AudioManager.instance.PlaySFX("sfx_jump", 1, 1 + UnityEngine.Random.Range(-0.2f, 0.2f));
+
                 ClearMomentum();
             }
             else if (usableAirJumps - currentAirJumps > 0 && keypresses["Jump"].GetStarted(jumpBufferTime) && Time.time - jumpTimestamp >= minimumAirJumpTime)
@@ -295,6 +297,8 @@ public class PlatformerPlayer : InheritableVelocityObject
                 gravityScale = airJumpGravityScale;
                 jumpTimestamp = Time.time;
                 currentAirJumps++;
+
+                AudioManager.instance.PlaySFX("sfx_jump", 1, 1 + UnityEngine.Random.Range(-0.2f, 0.2f));
 
                 ClearMomentum();
             }
@@ -334,7 +338,9 @@ public class PlatformerPlayer : InheritableVelocityObject
                 currentDives++;
                 gravityScale = diveGravityScale;
                 diveDir = transform.forward;
+                modelRot = transform.rotation;
                 ClearMomentum();
+                AudioManager.instance.PlaySFX("sfx_dash", 1, 1 + UnityEngine.Random.Range(-0.2f, 0.2f));
             }
         }
 
@@ -404,6 +410,11 @@ public class PlatformerPlayer : InheritableVelocityObject
         keypresses["Dive"].ReleaseKey();
     }
 
+    public void RestartLevel(InputAction.CallbackContext ctx)
+    {
+        GameManager.instance.RestartLevel();
+    }
+
     private void OnEnable()
     {
         PlayInput.Player.Jump.started += JumpStart;
@@ -411,6 +422,8 @@ public class PlatformerPlayer : InheritableVelocityObject
 
         PlayInput.Player.Dive.started += DiveStart;
         PlayInput.Player.Dive.canceled += DiveEnd;
+
+        PlayInput.Player.Reset.started += RestartLevel;
     }
 
     private void OnDisable()
@@ -465,6 +478,8 @@ public class PlatformerPlayer : InheritableVelocityObject
             rotationAdditions.Clear();
 
         animator.Play("air_code", 0);
+
+        AudioManager.instance.PlaySFX("sfx_damage");
     }
 
     private void OnTriggerEnter(Collider other)

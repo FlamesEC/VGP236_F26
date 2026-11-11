@@ -23,10 +23,11 @@ public class AudioManager : MonoBehaviour
         if (instance != null)
         {
             print($"INSTANCE OF {this.GetType()} ALREADY EXISTS.");
-            Destroy(this);
+            Destroy(this.gameObject);
             return;
         }
 
+        DontDestroyOnLoad(gameObject);
         instance = this;
     }
 
@@ -85,6 +86,30 @@ public class AudioManager : MonoBehaviour
                 continue;
 
             clipSource.PlayOneShot(clipList[i], volume);
+            break;
+        }
+    }
+
+    /// <summary>
+    /// Pitch usage is more expensive; Must instantiate source and set pitch individually.
+    /// </summary>
+    /// <param name="audioName"></param>
+    /// <param name="volume"></param>
+    /// <param name="pitch"></param>
+    public void PlaySFX(string audioName, float volume, float pitch)
+    {
+        for (int i = 0; i < clipList.Count; i++)
+        {
+            if (clipList[i].name != audioName)
+                continue;
+
+            AudioSource s = Instantiate(clipSource.gameObject, transform).gameObject.GetComponent<AudioSource>();
+            
+            s.pitch = pitch;
+            s.PlayOneShot(clipList[i], volume);
+
+            Destroy(s.gameObject, clipList[i].length);
+
             break;
         }
     }
