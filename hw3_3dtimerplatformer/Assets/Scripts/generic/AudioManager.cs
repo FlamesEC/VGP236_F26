@@ -59,6 +59,7 @@ public class AudioManager : MonoBehaviour
                     StopMusic();
                     musicBufferName = "NULL";
                     musicSource.volume = defaultVolumeMusic;
+                    musicSource.clip = null;
                 }
             }
         }
@@ -137,6 +138,14 @@ public class AudioManager : MonoBehaviour
     {
         if (musicSource.clip != null && musicSource.clip.name == songName)
         {
+            if (fadingOut)
+            {
+                fadingOut = false;
+                fadeoutTimestamp = -1;
+                musicSource.volume = defaultVolumeMusic;
+                return;
+            }
+
             musicSource.UnPause();
             return;
         }
@@ -162,6 +171,9 @@ public class AudioManager : MonoBehaviour
 
     public void StopMusic(float secondsForFadeout)
     {
+        if (musicSource.clip == null)
+            return;
+
         PlayMusic("X_INST_STOP", secondsForFadeout);
     }
 
