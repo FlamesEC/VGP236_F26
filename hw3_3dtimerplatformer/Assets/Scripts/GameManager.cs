@@ -31,9 +31,10 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button7))
         {
             instance = null;
+            FindAnyObjectByType<PlatformerPlayer>().enabled = false;
             SceneManager.LoadScene(0);
         }
 
@@ -46,7 +47,7 @@ public class GameManager : MonoBehaviour
     public void SetTimerStatus(bool status)
     {
         running = status;
-        if (!running)
-            FindAnyObjectByType<PlatformerPlayer>().canMove = false;
+        /*if (!running)
+            FindAnyObjectByType<PlatformerPlayer>().canMove = false;*/
     }
 }

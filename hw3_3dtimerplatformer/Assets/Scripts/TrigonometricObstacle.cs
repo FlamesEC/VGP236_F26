@@ -61,10 +61,10 @@ public class TrigonometricObstacle : ObstacleMover
             switch (func)
             {
                 case TrigonometricFunctions.SINE:
-                    speed += Mathf.Sin((Time.time + weigh.timeOffset) * (weigh.speed / 100f)) * weigh.scale * (weigh.speed / 100f);
+                    speed += Mathf.Sin((Time.timeSinceLevelLoad + weigh.timeOffset) * (weigh.speed / 100f)) * weigh.scale * (weigh.speed / 100f);
                     break;
                 case TrigonometricFunctions.COSINE:
-                    speed += Mathf.Cos((Time.time + weigh.timeOffset) * (weigh.speed / 100f)) * weigh.scale * (weigh.speed / 100f);
+                    speed += Mathf.Cos((Time.timeSinceLevelLoad + weigh.timeOffset) * (weigh.speed / 100f)) * weigh.scale * (weigh.speed / 100f);
                     break;
             }
         }

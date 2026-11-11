@@ -6,6 +6,6 @@ public class ConstantObstacleRotator : ObstacleRotator
 
     public override Vector3 GetNewRot()
     {
-        return StartRot + rotSpeed * Time.time;
+        return StartRot + rotSpeed * Time.timeSinceLevelLoad;
     }
 }

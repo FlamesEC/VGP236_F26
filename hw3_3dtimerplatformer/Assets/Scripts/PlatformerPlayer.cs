@@ -285,6 +285,8 @@ public class PlatformerPlayer : InheritableVelocityObject
                 jumpTimestamp = Time.time;
                 selfVelocity = new Vector3(selfVelocity.x, jumpForce, selfVelocity.z);
                 gravityScale = jumpGravityScale;
+
+                ClearMomentum();
             }
             else if (usableAirJumps - currentAirJumps > 0 && keypresses["Jump"].GetStarted(jumpBufferTime) && Time.time - jumpTimestamp >= minimumAirJumpTime)
             {
@@ -293,6 +295,8 @@ public class PlatformerPlayer : InheritableVelocityObject
                 gravityScale = airJumpGravityScale;
                 jumpTimestamp = Time.time;
                 currentAirJumps++;
+
+                ClearMomentum();
             }
         }
     }
@@ -415,6 +419,11 @@ public class PlatformerPlayer : InheritableVelocityObject
 
         PlayInput.Player.Dive.started -= DiveStart;
         PlayInput.Player.Dive.canceled -= DiveEnd;
+    }
+
+    private void OnDestroy()
+    {
+        PlayInput.Disable();
     }
 
     private void OnDrawGizmos()

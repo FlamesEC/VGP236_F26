@@ -255,4 +255,9 @@ public class InheritableVelocityObject : MonoBehaviour
             rotationAdditions.Remove(v);
         }
     }
+
+    public void ClearMomentum()
+    {
+        momentumValues.Clear();
+    }
 }
