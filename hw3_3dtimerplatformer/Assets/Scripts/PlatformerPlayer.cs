@@ -454,6 +454,9 @@ public class PlatformerPlayer : InheritableVelocityObject
         reachFloorTime = -10;
         lastFloorTime = -10;
 
+        currentAirJumps = 0;
+        currentDives = 0;
+
         if (objectQueue != null)
             objectQueue.Clear();
         if (velocityAdditions != null)
