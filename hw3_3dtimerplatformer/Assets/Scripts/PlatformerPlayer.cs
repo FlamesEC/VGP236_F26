@@ -334,6 +334,7 @@ public class PlatformerPlayer : InheritableVelocityObject
                 currentDives++;
                 gravityScale = diveGravityScale;
                 diveDir = transform.forward;
+                ClearMomentum();
             }
         }
 
