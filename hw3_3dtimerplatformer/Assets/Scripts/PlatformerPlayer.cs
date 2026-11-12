@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Windows;
 
 public class PlatformerPlayer : InheritableVelocityObject
 {
@@ -159,9 +158,6 @@ public class PlatformerPlayer : InheritableVelocityObject
         lastFloor = groundCheck.GetOnFloor();
 
         checkpointPos = transform.position;
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -177,11 +173,6 @@ public class PlatformerPlayer : InheritableVelocityObject
         if (!groundCheck.GetOnFloor())
             selfVelocity += gravity * Time.deltaTime;
 
-        AnimationLogic();
-
-        lastVelocityY = selfVelocity.y;
-        lastFloor = groundCheck.GetOnFloor();
-
         selfVelocity += diveVec;
 
         foreach (KeyValuePair<string, InputObject> kp in keypresses)
@@ -191,6 +182,11 @@ public class PlatformerPlayer : InheritableVelocityObject
     private void LateUpdate()
     {
         ShadowCast();
+
+        AnimationLogic();
+
+        lastVelocityY = selfVelocity.y;
+        lastFloor = groundCheck.GetOnFloor();
 
         if (transform.position.y < -15)
             KillPlayer();
@@ -265,6 +261,7 @@ public class PlatformerPlayer : InheritableVelocityObject
                 selfVelocity.Scale(new Vector3(1, 0, 1));
                 currentDiveForce = 0;
                 reachFloorTime = Time.time;
+                AudioManager.instance.PlaySFX("sfx_land", 0.6f, 1 + UnityEngine.Random.Range(-0.3f, 0.1f));
             }
         }
 
@@ -287,10 +284,8 @@ public class PlatformerPlayer : InheritableVelocityObject
                 gravityScale = jumpGravityScale;
 
                 AudioManager.instance.PlaySFX("sfx_jump", 1, 1 + UnityEngine.Random.Range(-0.2f, 0.2f));
-
-                ClearMomentum();
             }
-            else if (usableAirJumps - currentAirJumps > 0 && keypresses["Jump"].GetStarted(jumpBufferTime) && Time.time - jumpTimestamp >= minimumAirJumpTime)
+            else if (!groundCheck.GetOnFloor() && usableAirJumps - currentAirJumps > 0 && keypresses["Jump"].GetStarted(jumpBufferTime) && Time.time - jumpTimestamp >= minimumAirJumpTime)
             {
                 onDiveTime = false;
                 selfVelocity = new Vector3(selfVelocity.x, jumpForce, selfVelocity.z);
@@ -310,7 +305,18 @@ public class PlatformerPlayer : InheritableVelocityObject
         if (!canMove)
             return;
 
+        if (Mouse.current == null)
+        {
+            Debug.Log("NO MOUSE DETECTED");
+            return;
+        }
+
+        Debug.Log("Mouse Delta: " + Mouse.current.delta.ReadValue());
+
         Vector2 input = PlayInput.Player.Look.ReadValue<Vector2>();
+        print(input);
+
+        input += GameManager.instance.GetTouchscreenDelta() * 3.0f;
 
         if (Mathf.Abs(input.magnitude) < 0.05f)
             input = Vector2.zero;
@@ -412,6 +418,9 @@ public class PlatformerPlayer : InheritableVelocityObject
 
     public void RestartLevel(InputAction.CallbackContext ctx)
     {
+        if (Time.timeSinceLevelLoad < 0.2f)
+            return;
+
         GameManager.instance.RestartLevel();
     }
 

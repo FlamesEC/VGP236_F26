@@ -1,11 +1,25 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    float timeTrack = 0;
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI bestTimeText;
+    float bestTime = 0;
+    PlatformerPlayer player;
+
+    public Canvas MOBILE_CANVAS;
+    private PointerEventData pointerData;
+    private List<RaycastResult> results = new();
+
+    bool running = false;
     private void Awake()
     {
         if (instance != null)
@@ -15,15 +29,36 @@ public class GameManager : MonoBehaviour
         }
 
         instance = this;
+
+        pointerData = new PointerEventData(EventSystem.current);
+
+        MOBILE_CANVAS.gameObject.SetActive(Keyboard.current == null && Touchscreen.current != null);
     }
 
-    float timeTrack = 0;
-    public TextMeshProUGUI timerText;
-    public TextMeshProUGUI bestTimeText;
-    float bestTime = 0;
-    PlatformerPlayer player;
+    bool IsPointerOverUI(Vector2 position)
+    {
+        pointerData.position = position;
+        results.Clear();
 
-    bool running = false;
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        return results.Count > 0;
+    }
+
+    public Vector2 GetTouchscreenDelta()
+    {
+        Vector2 delta = Vector2.zero;
+
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            if (IsPointerOverUI(Input.touches[i].position))
+                continue;
+
+            delta += Input.touches[i].deltaPosition;
+        }
+
+        return delta;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +69,15 @@ public class GameManager : MonoBehaviour
         
         bestTime = PlayerPrefs.GetFloat("record", 0);
         ApplyBestTime();
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+            return;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void ApplyBestTime()
@@ -49,6 +93,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Touchscreen.current != null && Touchscreen.current.wasUpdatedThisFrame)
+            MOBILE_CANVAS.gameObject.SetActive(true);
+
         if (running)
         {
             if (bestTime > 0 && timeTrack <= bestTime && timeTrack + Time.deltaTime > bestTime)
