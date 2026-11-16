@@ -1,9 +1,9 @@
 const cacheName = "ShyMaking-3d-platformer-0.1.0";
 const contentToCache = [
-    "Build/webgl_mobile.loader.js",
-    "Build/webgl_mobile.framework.js.br",
-    "Build/webgl_mobile.data.br",
-    "Build/webgl_mobile.wasm.br",
+    "Build/3dplatformer_webbuild.loader.js",
+    "Build/3dplatformer_webbuild.framework.js",
+    "Build/3dplatformer_webbuild.data",
+    "Build/3dplatformer_webbuild.wasm",
     "TemplateData/style.css"
 
 ];

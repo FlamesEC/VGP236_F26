@@ -39,7 +39,7 @@ Made with the purpose of further understanding **Unity's Input System**, **Rigid
 * **Custom Unity Transform Inheritance**, for further Rigidbody Inheritance Control through Velocity Additions & Rotation Support.
 * **3D Velocity Rigidbody Usage**, with directional consideration & direction locking on specific circumstances.
 * **ProBuilder**, for level blocking and quick iteration.
-* **WebGL Desktop & Mobile Support**, for web-based usage.
+* **[WebGL Desktop & Mobile Support](https://flamesec.github.io/VGP236_F26/ProjectBuilds/3dplatformer_webbuild/)**, for web-based usage.
 
 *( **Venus.wav** by **[SketchyLogic](https://www.youtube.com/watch?v=p1U5FjgwDhA)** - Sourced from [OpenGameArt.org](https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles) under the Public Domain )*
 
