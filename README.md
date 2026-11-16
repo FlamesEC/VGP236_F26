@@ -17,7 +17,7 @@ Simple **Pachinko-Styled Project** with the purpose of testing default **Unity P
 
 *( **A Simple Diversion** by **[Toby Fox](https://www.youtube.com/watch?v=p1U5FjgwDhA)**, not included in project files. )*
 
-![PACHINKO gif](resources/gif_hw1.gif)
+![PACHINKO gif](Resources/gif_hw1.gif)
 
 ## "2D COOP PLATFORMER - hw2_platformer"
 **Two-Player Cooperative Platforming Prototype**, consisting of multiple levels that test the communication and deduction capabilities of both players. 
@@ -29,7 +29,7 @@ Made with the purpose of further understanding **Unity's Input System**, **Rigid
 * **Custom Input Supporting Class**, for easier Input Buffering in relation to the Input System.
 * **Local Multiplayer Manager**, for connecting and disconnecting support and assigning to player objects.
 
-![2D COOP PLATFORMER gif](resources/gif_hw2.gif)
+![2D COOP PLATFORMER gif](Resources/gif_hw2.gif)
 
 ## "[UNTITLED PLATFORMER PROTOTYPE](https://flamesec.itch.io/3dplat) - hw3_3dtimerplatformer"
 **Single Player 3D Platformer** consisting of a short minute-long level with Smooth 3D Movement, and a timer.
@@ -43,4 +43,4 @@ Made with the purpose of further understanding **Unity's Input System**, **Rigid
 
 *( **Venus.wav** by **[SketchyLogic](https://www.youtube.com/watch?v=p1U5FjgwDhA)** - Sourced from [OpenGameArt.org](https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles) under the Public Domain )*
 
-![UNTITLED PLATFORMER PROTOTYPE gif](resources/gif_hw3.gif)
+![UNTITLED PLATFORMER PROTOTYPE gif](Resources/gif_hw3.gif)
