@@ -311,10 +311,10 @@ public class PlatformerPlayer : InheritableVelocityObject
             return;
         }
 
-        Debug.Log("Mouse Delta: " + Mouse.current.delta.ReadValue());
+        //Debug.Log("Mouse Delta: " + Mouse.current.delta.ReadValue());
 
         Vector2 input = PlayInput.Player.Look.ReadValue<Vector2>();
-        print(input);
+        //print(input);
 
         input += GameManager.instance.GetTouchscreenDelta() * 3.0f;
 
@@ -465,7 +465,13 @@ public class PlatformerPlayer : InheritableVelocityObject
 
     public void KillPlayer()
     {
-        transform.position = checkpointPos;
+        Vector3 spawnPos = checkpointPos;
+        RaycastHit hit;
+
+        if (Physics.Raycast(spawnPos, Vector3.down, out hit, 50, floorMask, QueryTriggerInteraction.Ignore))
+            spawnPos = hit.point + new Vector3(0, 1, 0);
+
+        transform.position = spawnPos;
         onDiveTime = false;
         currentDiveForce = 0;
         jumping = false;
